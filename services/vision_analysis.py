@@ -15,7 +15,7 @@ load_dotenv()  # loads .env into environment
 # from PIL import Image
 
 # Initialize the NEW client (v1 API)
-client = genai.Client(api_key=API_KEY)
+# client = genai.Client(api_key=API_KEY)
 
 # --- 2. DEFINE OUTPUT SCHEMA (Using Pydantic) ---
 # The new SDK loves Pydantic. It's much cleaner than TypedDict.
@@ -67,6 +67,8 @@ def analyze_product(payload: dict):
     print(f"--- Processing {category} (ID: {product_id}) ---")
 
     API_KEY = os.getenv("GEMINI_API_KEY")
+
+    client = genai.Client(api_key=API_KEY)
 
     if not API_KEY:
         raise ValueError("API key error")
