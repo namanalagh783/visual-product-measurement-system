@@ -8,10 +8,10 @@ import os
 
 load_dotenv()  # loads .env into environment
 
-API_KEY = os.getenv("GEMINI_API_KEY")
+# API_KEY = os.getenv("GEMINI_API_KEY")
 
-if not API_KEY:
-    raise ValueError("API key error")
+# if not API_KEY:
+#     raise ValueError("API key error")
 # from PIL import Image
 
 # Initialize the NEW client (v1 API)
@@ -65,6 +65,11 @@ def analyze_product(payload: dict):
     urls = payload.get("valid_images", [])
     
     print(f"--- Processing {category} (ID: {product_id}) ---")
+
+    API_KEY = os.getenv("GEMINI_API_KEY")
+
+    if not API_KEY:
+        raise ValueError("API key error")
 
     # A. Prepare Content List
     # The new SDK accepts a list containing text and "Part" objects for images
