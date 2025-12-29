@@ -2,11 +2,17 @@ import requests
 from pydantic import BaseModel, Field
 from google import genai
 from google.genai import types
-# from PIL import Image
 from io import BytesIO
+from dotenv import load_dotenv
+import os
 
-# --- 1. CONFIGURATION ---
-API_KEY = "AIzaSyDwGyUGaAlpqYJ0rr7U1CpQ_oju8vuvJFU"
+load_dotenv()  # loads .env into environment
+
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("API key error")
+# from PIL import Image
 
 # Initialize the NEW client (v1 API)
 client = genai.Client(api_key=API_KEY)

@@ -1,27 +1,37 @@
+from services.image_validation import validate_product_images
+from services.vision_analysis import analyze_product
+from services.aggregation import aggregate_scores
 import asyncio
-from schemas.request import ProductIngestRequest
-from services.aggregator import vpms
+import json
 
 
-async def main():
-    test_input = ProductIngestRequest(
-        product_id=235396,
-        category="Sunglasses",
-        declared_image_count=6,
-        image_urls=[
-            "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2781_18_08_2025.jpg",
-            "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2780_18_08_2025.jpg",
-            "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2783_18_08_2025.jpg",
-            "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2784_18_08_2025.jpg",
-            "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2786_18_08_2025.jpg",
-            "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2781_image_pla_18_08_2025.jpg"
+def orchestrator(test_input : dict) -> dict:
+    result = asyncio.run(validate_product_images(test_input))
+    # print(json.dumps(result, indent=2))
+    result2 = analyze_product(result)
+    # print(json.dumps(result2))
+    result3 = aggregate_scores(result2)
+    return result3
+
+
+
+test_input1 = {
+        "product_id": 231031,  # Note: It handles Int or String now
+        "category": "Eyeglasses",
+        "declared_image_count": 2,
+        "image_urls": [
+            "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+            "https://this-does-not-exist.com/fail.jpg"
         ]
-    )
+    }
 
-    result = await vpms(test_input)
-    print("\nFINAL PIPELINE OUTPUT:\n")
-    print(result)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    # B. Run the function
+    # (Since it uses async, we need asyncio.run to start it)
+# result = asyncio.run(validate_product_images(test_input))
+# # print(json.dumps(result, indent=2))
+# result2 = analyze_product(result)
+# # print(json.dumps(result2))
+# result3 = aggregate_scores(result2)
+# print(json.dumps(result3, indent=2))
+result = orchestrator(test_input1)
+print(json.dumps(result, indent=2))
