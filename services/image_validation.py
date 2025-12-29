@@ -1,5 +1,6 @@
 import asyncio
 import httpx
+from schemas.request import ProductIngestRequest
 
 # --- 1. THE HELPER FUNCTION (Checks one image) ---
 async def check_single_url(client, url):
@@ -24,17 +25,17 @@ async def check_single_url(client, url):
         return str(url), False, "Unreachable / Connection Error"
 
 # --- 2. THE MAIN FUNCTION (Call this!) ---
-async def validate_product_images(product_data: dict):
+async def validate_product_images(product_data):
     """
     Takes a dictionary with product details.
     Returns a dictionary with validation results.
     """
     
     # Extract data (Safe conversion of product_id to string)
-    p_id = str(product_data.get("product_id"))
-    category = product_data.get("category")
-    declared_count = product_data.get("declared_image_count", 0)
-    urls = product_data.get("image_urls", [])
+    p_id = str(product_data.product_id)
+    category = product_data.category
+    declared_count = product_data.declared_image_count or 0
+    urls = product_data.image_urls or []
     
     # Prepare lists
     valid_images = []
@@ -42,7 +43,7 @@ async def validate_product_images(product_data: dict):
 
     # Run checks in parallel
     async with httpx.AsyncClient() as client:
-        tasks = [check_single_url(client, url) for url in urls]
+        tasks = [check_single_url(client, str(url)) for url in urls]
         results = await asyncio.gather(*tasks)
 
     # Sort results
@@ -72,23 +73,27 @@ async def validate_product_images(product_data: dict):
     }
 
 # --- 3. HOW TO TEST IT ---
-if __name__ == "__main__":
+# if __name__ == "__main__":
     
-    # A. Define your test data (Simulating the CSV row)
-    test_input = {
-        "product_id": 231031,  # Note: It handles Int or String now
-        "category": "Eyeglasses",
-        "declared_image_count": 2,
-        "image_urls": [
-            "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
-            "https://this-does-not-exist.com/fail.jpg"
-        ]
-    }
+#     # A. Define your test data (Simulating the CSV row)
+#     test_input = ProductIngestRequest(
+#         product_id=235396,
+#         category="Sunglasses",
+#         declared_image_count=6,
+#         image_urls=[
+#             "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2781_18_08_2025.jpg",
+#             "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2780_18_08_2025.jpg",
+#             "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2783_18_08_2025.jpg",
+#             "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2784_18_08_2025.jpg",
+#             "https://static5.lenskart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2786_18_08_2025.jpg",
+#             "https://static5.lekart.com/media/catalog/product/pro/1/thumbnail/1325x636/9df78eab33525d08d6e5fb8d27136e95//l/i/brown-black-full-rim-cat-eye-lenskart-sg-nuun-lk-s18217af-sunglasses__dsc2781_image_pla_18_08_2025.jpg",
+#         ],
+#     )
 
-    # B. Run the function
-    # (Since it uses async, we need asyncio.run to start it)
-    result = asyncio.run(validate_product_images(test_input))
+#     # B. Run the function
+#     # (Since it uses async, we need asyncio.run to start it)
+#     result = asyncio.run(validate_product_images(test_input))
 
-    # C. Print Result
-    import json
-    print(json.dumps(result, indent=2))
+#     # C. Print Result
+#     import json
+#     print(json.dumps(result, indent=2))
