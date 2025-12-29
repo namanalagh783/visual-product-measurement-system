@@ -32,11 +32,11 @@ I implemented the system as a three-stage pipeline exposed via a single API endp
 
 ```mermaid
 graph TD
-    Client[Client Request] --> Stage1
-    Stage1[Stage 1: Ingestion & Validation] --> Stage2
-    Stage2[Stage 2: Vision Analysis (AI)] --> Stage3
-    Stage3[Stage 3: Aggregation & Scoring] --> Final[Final JSON Response]
-    
+    Client["Client Request"] --> Stage1
+    Stage1["Stage 1: Ingestion and Validation"] --> Stage2
+    Stage2["Stage 2: Vision Analysis (AI)"] --> Stage3
+    Stage3["Stage 3: Aggregation and Scoring"] --> Final["Final JSON Response"]
+
     style Stage1 fill:#e1f5fe,stroke:#01579b
     style Stage2 fill:#fff3e0,stroke:#ff6f00
     style Stage3 fill:#e8f5e9,stroke:#2e7d32
