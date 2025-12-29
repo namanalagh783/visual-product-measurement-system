@@ -184,4 +184,6 @@ Since this was a scoped assignment (approx. 8 hours), I had to make some specifi
 
 ## 📝 Summary
 
-This project was a great exercise in **systems thinking**. It demonstrates that using AI isn't just about sending a prompt—it's about building a robust architecture around that prompt to ensure the data you get back is actually useful, valid, and safe to use in a business context.
+This project was a great exercise in **systems thinking**. It demonstrates that using AI isn't just about sending a prompt—it's about building a robust architecture around that prompt to ensure the data you get back is actually useful, valid, and safe to use in a business context. 
+
+## Thank You!
